@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import MapView, { Marker, Callout } from "react-native-maps";
+import MapView, { Marker, Callout, CalloutSubview } from "react-native-maps";
 import {
   Center,
   Input,
@@ -32,17 +32,18 @@ const map = () => {
       <Marker
         key={1}
         coordinate={{ latitude: 43.65189, longitude: -79.381706 }}
-        title="Cool pin"
-        description="A description"
       >
         <Callout>
-          <Button
-            onPress={() => router.push(`/device/1`)}
-            variant="link"
-            action="primary"
+          <CalloutSubview
+            onPress={() => {
+              console.log("bob");
+              router.push(`/device/1`);
+            }}
           >
-            <ButtonText>Button </ButtonText>
-          </Button>
+            <Button>
+              <ButtonText>Link</ButtonText>
+            </Button>
+          </CalloutSubview>
         </Callout>
       </Marker>
     </MapView>
