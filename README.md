@@ -1,13 +1,11 @@
-# Expo Router Example
-
-Use [`expo-router`](https://expo.github.io/router) to build native navigation using files in the `app/` directory.
+# Atlas Frontend
 
 ## 🚀 How to use
 
 ```sh
-npx create-expo-app -e with-router
+npm run start
 ```
-
+Use the Expo Go app to scan the generated QR code in order to get developing. 
 ## 📝 Notes
 
 - [Expo Router: Docs](https://expo.github.io/router)
