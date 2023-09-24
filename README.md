@@ -1,9 +1,9 @@
 # Atlas Frontend
 
 ## 🚀 How to use
-
+Clone the repo and then cd into the folder. Run the following command. 
 ```sh
-npm run start
+npm i; npm run start;
 ```
 Use the Expo Go app to scan the generated QR code in order to get developing. 
 ## 📝 Notes
