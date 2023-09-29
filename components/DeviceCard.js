@@ -17,7 +17,7 @@ const Card = ({ id, name, type }) => {
       <VStack
         space="md"
         reversed={false}
-        style={{ justifyContent: "space-between" }}
+        style={{ justifyContent: "space-between", flex: 1 }}
       >
         <Text>{name}</Text>
         <Button

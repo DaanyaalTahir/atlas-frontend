@@ -36,7 +36,6 @@ const map = () => {
         <Callout>
           <CalloutSubview
             onPress={() => {
-              console.log("bob");
               router.push(`/device/1`);
             }}
           >

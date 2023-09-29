@@ -5,6 +5,10 @@ import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import MapView, { Marker, Callout } from "react-native-maps";
 import { reverseGeocodeAsync } from "expo-location";
 import { Heading, ButtonText } from "@gluestack-ui/themed";
+import { FlatGrid } from "react-native-super-grid";
+import { Navigation, MapPin, Settings, Volume2 } from "lucide-react-native";
+import ActionCard from "../../../components/ActionCard";
+import { Linking } from "react-native";
 
 const Device = () => {
   const local = useLocalSearchParams();
@@ -12,15 +16,23 @@ const Device = () => {
   const [mapRef, setMapRef] = useState(null);
   const [currentAddress, setCurrentAddress] = useState("Loading...");
 
+  const latitude = 43.65189;
+  const longitude = -79.381706;
   useEffect(() => {
-    if (mapRef) mapRef.fitToElements();
+    if (mapRef)
+      mapRef.fitToCoordinates([
+        {
+          latitude: latitude,
+          longitude: longitude,
+        },
+      ]);
   }, [mapRef]);
 
   useEffect(() => {
     const reverseGeocode = async () => {
       const reverseGeocodedAddress = await reverseGeocodeAsync({
-        latitude: 43.65189,
-        longitude: -79.381706,
+        latitude: latitude,
+        longitude: longitude,
       });
       const { streetNumber, street, city, region, postalCode } =
         reverseGeocodedAddress[0];
@@ -32,7 +44,30 @@ const Device = () => {
     reverseGeocode();
   }, []);
 
-  const snapPoints = ["20%", "10%", "50%", "90%"];
+  const snapPoints = ["20%", "40%"];
+  const actionArray = [
+    {
+      icon: <Navigation />,
+      onPressEvent: () =>
+        Linking.openURL(`maps://0,0?q=Custom Label@${latitude},${longitude}`),
+      name: "Get Directions",
+    },
+    {
+      icon: <MapPin />,
+      onPressEvent: () => console.log("location history pressed"),
+      name: "Location History",
+    },
+    {
+      icon: <Volume2 />,
+      onPressEvent: () => console.log("about device pressed"),
+      name: "Play Sound",
+    },
+    {
+      icon: <Settings />,
+      onPressEvent: () => console.log("about device pressed"),
+      name: "Device Settings",
+    },
+  ];
 
   return (
     <View style={{ flex: 1 }}>
@@ -56,8 +91,21 @@ const Device = () => {
         ref={sheetRef}
         style={devicePageStyles.bottomSheet}
       >
-        <BottomSheetView>
+        <BottomSheetView style={{ flex: 1 }}>
           <Heading size="md">{currentAddress}</Heading>
+          <FlatGrid
+            itemDimension={115}
+            data={actionArray}
+            adjustGridToStyles={true}
+            contentContainerStyle={{ maxHeight: 100 }}
+            renderItem={({ item }) => (
+              <ActionCard
+                name={item.name}
+                onPressEvent={item.onPressEvent}
+                icon={item.icon}
+              />
+            )}
+          />
         </BottomSheetView>
       </BottomSheet>
     </View>
