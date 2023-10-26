@@ -1,5 +1,6 @@
+import axios from "axios";
 import { View, StyleSheet } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import { useLocalSearchParams, Stack } from "expo-router";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import MapView, { Marker, Callout } from "react-native-maps";
@@ -9,15 +10,20 @@ import { FlatGrid } from "react-native-super-grid";
 import { Navigation, MapPin, Settings, Volume2 } from "lucide-react-native";
 import ActionCard from "../../../components/ActionCard";
 import { Linking } from "react-native";
+import { SERVER_ENDPOINT } from "../../../globals";
+import { useEventSource } from "../../../utils/EventSourceProvider";
 
 const Device = () => {
   const local = useLocalSearchParams();
+  const deviceId = local.device;
   const sheetRef = useRef(null);
   const [mapRef, setMapRef] = useState(null);
   const [currentAddress, setCurrentAddress] = useState("Loading...");
-
+  const [deviceInfo, setDeviceInfo] = useState({});
+  const [listening, setListening] = useState(false);
   const latitude = 43.65189;
   const longitude = -79.381706;
+  const { eventSource, initializeEventSource } = useEventSource();
   useEffect(() => {
     if (mapRef)
       mapRef.fitToCoordinates([
@@ -42,6 +48,41 @@ const Device = () => {
     };
 
     reverseGeocode();
+
+    async function fetchData() {
+      try {
+        const response = await axios.get(
+          `${SERVER_ENDPOINT}/devices/device/${deviceId}`
+        );
+        setDeviceInfo(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    initializeEventSource();
+    if (eventSource != null) {
+      console.log("This is the real bob");
+      eventSource.addEventListener(`${deviceId}_location`, (event) => {
+        console.log("HELOOOOOOOOOOOOOOOOOO location");
+      });
+
+      eventSource.addEventListener("error", (error) => {
+        console.error("SSE Error:", error);
+      });
+    }
+    eventSource.onmessage = (event) => {
+      console.log("HELOOOOOOOOOOOOOOOOOO location");
+    };
+    return () => {
+      if (eventSource) {
+        eventSource.removeAllEventListeners();
+        eventSource.close();
+      }
+    };
   }, []);
 
   const snapPoints = ["20%", "40%"];
@@ -71,7 +112,9 @@ const Device = () => {
 
   return (
     <View style={{ flex: 1 }}>
-      <Stack.Screen options={{ headerTitle: `Device ${local.device}` }} />
+      <Stack.Screen
+        options={{ headerTitle: `${deviceInfo.name && deviceInfo.name}` }}
+      />
       <MapView
         style={{ flex: 1 }}
         showsUserLocation={true}

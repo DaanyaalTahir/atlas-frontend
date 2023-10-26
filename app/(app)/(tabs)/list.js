@@ -1,20 +1,35 @@
 import { View, Text } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Card from "../../../components/DeviceCard";
 import { FlatGrid } from "react-native-super-grid";
 import { StyleSheet, Dimensions } from "react-native";
+import { useSession } from "../../../utils/ctx";
+import axios from "axios";
+import { SERVER_ENDPOINT } from "../../../globals";
 
 const list = () => {
-  const testArr = [
-    { id: 1, name: "My backpack", type: "backpack" },
-    { id: 2, name: "My car", type: "car" },
-    { id: 3, name: "My car", type: "car" },
-  ];
+  const [devices, setDevices] = useState([]);
+  const { session } = useSession();
+  const user = JSON.parse(session);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await axios.get(
+          `${SERVER_ENDPOINT}/devices/user/${user.userId}`
+        );
+        setDevices(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchData();
+  }, []);
 
   return (
     <FlatGrid
       itemDimension={130}
-      data={testArr}
+      data={devices}
       renderItem={({ item }) => <Card name={item.name} id={item.id} />}
     />
   );
