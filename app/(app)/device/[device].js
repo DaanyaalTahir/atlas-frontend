@@ -11,7 +11,7 @@ import { Navigation, MapPin, Settings, Volume2 } from "lucide-react-native";
 import ActionCard from "../../../components/ActionCard";
 import { Linking } from "react-native";
 import { SERVER_ENDPOINT } from "../../../globals";
-import { useEventSource } from "../../../utils/EventSourceProvider";
+import EventSource from "react-native-sse";
 
 const Device = () => {
   const local = useLocalSearchParams();
@@ -23,7 +23,6 @@ const Device = () => {
   const [listening, setListening] = useState(false);
   const latitude = 43.65189;
   const longitude = -79.381706;
-  const { eventSource, initializeEventSource } = useEventSource();
   useEffect(() => {
     if (mapRef)
       mapRef.fitToCoordinates([
@@ -63,25 +62,15 @@ const Device = () => {
   }, []);
 
   useEffect(() => {
-    initializeEventSource();
-    if (eventSource != null) {
-      console.log("This is the real bob");
-      eventSource.addEventListener(`${deviceId}_location`, (event) => {
-        console.log("HELOOOOOOOOOOOOOOOOOO location");
-      });
+    const eventSource = new EventSource(`${SERVER_ENDPOINT}/events/${1}`);
+    eventSource.addEventListener(`${deviceId}_location`, (event) => {
+      console.log(event.type); // message
+      console.log(event.data);
+    });
 
-      eventSource.addEventListener("error", (error) => {
-        console.error("SSE Error:", error);
-      });
-    }
-    eventSource.onmessage = (event) => {
-      console.log("HELOOOOOOOOOOOOOOOOOO location");
-    };
     return () => {
-      if (eventSource) {
-        eventSource.removeAllEventListeners();
-        eventSource.close();
-      }
+      eventSource.removeAllEventListeners();
+      eventSource.close();
     };
   }, []);
 
