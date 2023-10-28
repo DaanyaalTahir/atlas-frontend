@@ -11,7 +11,7 @@ import { Navigation, MapPin, Settings, Volume2 } from "lucide-react-native";
 import ActionCard from "../../../components/ActionCard";
 import { Linking } from "react-native";
 import { SERVER_ENDPOINT } from "../../../globals";
-import EventSource from "react-native-sse";
+import RNEventSource from "react-native-event-source";
 
 const Device = () => {
   const local = useLocalSearchParams();
@@ -62,17 +62,37 @@ const Device = () => {
   }, []);
 
   useEffect(() => {
-    const eventSource = new EventSource(`${SERVER_ENDPOINT}/events/${1}`);
-    eventSource.addEventListener(`${deviceId}_location`, (event) => {
-      console.log(event.type); // message
-      console.log(event.data);
+    const eventSource = new RNEventSource(
+      `${SERVER_ENDPOINT}/events/${deviceId}`
+    );
+
+    // eventSource.addEventListener(`${deviceId}_location`, (event) => {
+    //   console.log(event.type); // message
+    //   console.log(event.data);
+    // });
+
+    eventSource.addEventListener("message", (event) => {
+      console.log(event);
     });
 
+    // eventSource.onmessage = (event) => {
+    //   console.log(event);
+    // };
+
+    // eventSource.onerror = (err) => {
+    //   console.log(err);
+    //   eventSource.close();
+    // };
+
     return () => {
-      eventSource.removeAllEventListeners();
       eventSource.close();
     };
-  }, []);
+
+    // return () => {
+    //   eventSource.removeAllEventListeners();
+    //   eventSource.close();
+    // };
+  }, [deviceId]);
 
   const snapPoints = ["20%", "40%"];
   const actionArray = [
