@@ -12,7 +12,7 @@ import ActionCard from "../../../components/ActionCard";
 import { Linking } from "react-native";
 import { SERVER_ENDPOINT } from "../../../globals";
 import RNEventSource from "react-native-event-source";
-
+import { useSession } from "../../../utils/ctx";
 const Device = () => {
   const local = useLocalSearchParams();
   const deviceId = local.device;
@@ -20,9 +20,12 @@ const Device = () => {
   const [mapRef, setMapRef] = useState(null);
   const [currentAddress, setCurrentAddress] = useState("Loading...");
   const [deviceInfo, setDeviceInfo] = useState({});
-  const [listening, setListening] = useState(false);
-  const latitude = 43.65189;
-  const longitude = -79.381706;
+  const [latitude, setLatitude] = useState(0.0);
+  const [longitude, setLongitude] = useState(0.0);
+  const [dateTime, setDateTime] = useState(null);
+  const { session } = useSession();
+  const user = JSON.parse(session);
+
   useEffect(() => {
     if (mapRef)
       mapRef.fitToCoordinates([
@@ -31,29 +34,22 @@ const Device = () => {
           longitude: longitude,
         },
       ]);
-  }, [mapRef]);
+  }, [mapRef, latitude, longitude]);
 
   useEffect(() => {
-    const reverseGeocode = async () => {
-      const reverseGeocodedAddress = await reverseGeocodeAsync({
-        latitude: latitude,
-        longitude: longitude,
-      });
-      const { streetNumber, street, city, region, postalCode } =
-        reverseGeocodedAddress[0];
-      setCurrentAddress(
-        `${streetNumber} ${street} ${city} ${region} ${postalCode}`
-      );
-    };
-
-    reverseGeocode();
-
     async function fetchData() {
       try {
-        const response = await axios.get(
+        const deviceResponse = await axios.get(
           `${SERVER_ENDPOINT}/devices/device/${deviceId}`
         );
-        setDeviceInfo(response.data);
+        setDeviceInfo(deviceResponse.data);
+
+        const lastLocationResponse = await axios.get(
+          `${SERVER_ENDPOINT}/locations/last-location/${deviceId}`
+        );
+
+        setLatitude(lastLocationResponse.data.latitude);
+        setLongitude(lastLocationResponse.data.longitude);
       } catch (error) {
         console.log(error);
       }
@@ -62,44 +58,50 @@ const Device = () => {
   }, []);
 
   useEffect(() => {
-    const eventSource = new RNEventSource(
-      `${SERVER_ENDPOINT}/events/${deviceId}`
-    );
-
-    // eventSource.addEventListener(`${deviceId}_location`, (event) => {
-    //   console.log(event.type); // message
-    //   console.log(event.data);
-    // });
-
-    eventSource.addEventListener("message", (event) => {
-      console.log(event);
-    });
-
-    // eventSource.onmessage = (event) => {
-    //   console.log(event);
-    // };
-
-    // eventSource.onerror = (err) => {
-    //   console.log(err);
-    //   eventSource.close();
-    // };
-
-    return () => {
-      eventSource.close();
+    const reverseGeocode = async () => {
+      const reverseGeocodedAddress = await reverseGeocodeAsync({
+        latitude: latitude,
+        longitude: longitude,
+      });
+      if (reverseGeocodedAddress[0]) {
+        const { streetNumber, street, city, region, postalCode } =
+          reverseGeocodedAddress[0];
+        setCurrentAddress(
+          `${streetNumber || ""} ${street || ""} ${city || ""} ${
+            region || ""
+          } ${postalCode || ""}`
+        );
+      }
     };
 
-    // return () => {
-    //   eventSource.removeAllEventListeners();
-    //   eventSource.close();
-    // };
-  }, [deviceId]);
+    if (latitude != 0 && longitude != 0) reverseGeocode();
+  }, [latitude, longitude]);
+
+  useEffect(() => {
+    const eventSource = new RNEventSource(
+      `${SERVER_ENDPOINT}/events/${user.userId}`
+    );
+
+    eventSource.addEventListener(`${deviceId}_location`, (event) => {
+      const parsedData = JSON.parse(event.data);
+      setLatitude(parsedData.latitude);
+      setLongitude(parsedData.longitude);
+    });
+
+    return () => {
+      eventSource.removeAllListeners();
+      eventSource.close();
+    };
+  }, [deviceId, latitude, longitude]);
 
   const snapPoints = ["20%", "40%"];
   const actionArray = [
     {
       icon: <Navigation />,
       onPressEvent: () =>
-        Linking.openURL(`maps://0,0?q=Custom Label@${latitude},${longitude}`),
+        Linking.openURL(
+          `maps://0,0?q=${deviceInfo.name}@${latitude},${longitude}`
+        ),
       name: "Get Directions",
     },
     {
@@ -133,7 +135,7 @@ const Device = () => {
       >
         <Marker
           key={1}
-          coordinate={{ latitude: 43.65189, longitude: -79.381706 }}
+          coordinate={{ latitude: latitude, longitude: longitude }}
           title="Cool pin"
           description="A description"
         />
