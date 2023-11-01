@@ -13,6 +13,7 @@ import { Linking } from "react-native";
 import { SERVER_ENDPOINT } from "../../../globals";
 import RNEventSource from "react-native-event-source";
 import { useSession } from "../../../utils/ctx";
+
 const Device = () => {
   const local = useLocalSearchParams();
   const deviceId = local.device;
@@ -82,17 +83,19 @@ const Device = () => {
       `${SERVER_ENDPOINT}/events/${user.userId}`
     );
 
-    eventSource.addEventListener(`${deviceId}_location`, (event) => {
+    eventSource.addEventListener(`${user.userId}_device_location`, (event) => {
       const parsedData = JSON.parse(event.data);
-      setLatitude(parsedData.latitude);
-      setLongitude(parsedData.longitude);
+      if (parsedData.deviceId == deviceId) {
+        setLatitude(parsedData.latitude);
+        setLongitude(parsedData.longitude);
+      }
     });
 
     return () => {
       eventSource.removeAllListeners();
       eventSource.close();
     };
-  }, [deviceId, latitude, longitude]);
+  }, []);
 
   const snapPoints = ["20%", "40%"];
   const actionArray = [
