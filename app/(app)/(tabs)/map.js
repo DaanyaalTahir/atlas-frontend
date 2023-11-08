@@ -10,14 +10,14 @@ import {
   Heading,
   Badge,
   BadgeText,
-  HStack,
+  Image,
 } from "@gluestack-ui/themed";
 import { router } from "expo-router";
 import axios from "axios";
 import { useSession } from "../../../utils/ctx";
 import { SERVER_ENDPOINT } from "../../../globals";
 import RNEventSource from "react-native-event-source";
-
+import { getTrackerIcon } from "../../../utils/utilities";
 const map = () => {
   const [mapRef, setMapRef] = useState(null);
   const [devices, setDevices] = useState([]);
@@ -27,7 +27,7 @@ const map = () => {
 
   useEffect(() => {
     if (mapRef) mapRef.fitToElements();
-  }, [mapRef]);
+  }, [mapRef, devices]);
 
   useEffect(() => {
     async function fetchData() {
@@ -67,7 +67,6 @@ const map = () => {
           }
         });
         setDevices(updatedDevices);
-        mapRef.fitToElements();
       }
     );
 
@@ -86,12 +85,21 @@ const map = () => {
       }}
     >
       {devices.map((device) => {
-        const { DeviceId, Latitude, Longitude, name } = device;
+        const { DeviceId, Latitude, Longitude, name, itemType } = device;
         return (
           <Marker
             key={DeviceId}
             coordinate={{ latitude: Latitude, longitude: Longitude }}
           >
+            <Image
+              source={getTrackerIcon(itemType)}
+              size="xs"
+              borderWidth="$2"
+              borderRadius="50%"
+              borderColor="$primary400"
+              backgroundColor="$primary50"
+              alt="item_type"
+            />
             <Callout>
               <CalloutSubview
                 onPress={() => {

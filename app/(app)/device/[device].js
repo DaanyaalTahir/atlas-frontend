@@ -28,7 +28,8 @@ const Device = () => {
   const user = JSON.parse(session);
 
   useEffect(() => {
-    if (mapRef)
+    console.log({ latitude, longitude });
+    if (mapRef && latitude != 0 && longitude != 0)
       mapRef.fitToCoordinates([
         {
           latitude: latitude,

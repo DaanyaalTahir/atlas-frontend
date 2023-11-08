@@ -30,7 +30,9 @@ const list = () => {
     <FlatGrid
       itemDimension={130}
       data={devices}
-      renderItem={({ item }) => <Card name={item.name} id={item.id} />}
+      renderItem={({ item }) => (
+        <Card name={item.name} id={item.id} type={item.itemType} />
+      )}
     />
   );
 };
