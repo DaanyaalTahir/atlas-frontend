@@ -3,7 +3,11 @@
 Atlas is a device (created using arduino) that allows users to track any of their belongings. They can view the location of their tracked items and interact with them within the Atlas mobile app which was created using react-native. 
 
 ## 💻 Technologies
+Below are the technologies that the full-stack app is using (this repo has only the frontend): 
 - react-native
+- ExpressJS
+- Server Sent Events
+- Sequelize ORM
 
 ## 📷 Pictures
 Below are some sample screenshots of the mobile application.
