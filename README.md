@@ -1,5 +1,28 @@
 # Atlas Frontend
 
+Atlas is a device (created using arduino) that allows users to track any of their belongings. They can view the location of their tracked items and interact with them within the Atlas mobile app which was created using react-native. 
+
+## 📷 Pictures
+Below are some sample screenshots of the mobile application.
+
+### Login Page
+<img src="https://github.com/DaanyaalTahir/atlas-frontend/blob/main/sample_images/loginPage.png" alt="login_page" height="400"/>
+
+### Home Page
+Displays a list of the items being tracked by the user.
+
+<img src="https://github.com/DaanyaalTahir/atlas-frontend/blob/main/sample_images/homepage.png" alt="home_page" height="400"/>
+
+### Tracker Page
+Detailed page of the tracker, users can view the exact location, get directions to the tracker, view its location history and more.
+
+<img src="https://github.com/DaanyaalTahir/atlas-frontend/blob/main/sample_images/trackerPage.png" alt="tracker_page" height="400"/>
+
+### Map Page
+The map page allows users to view all their tracked items at once. When the item is selected on the map they will be navigated to the detailed view of that item.
+
+<img src="https://github.com/DaanyaalTahir/atlas-frontend/blob/main/sample_images/mapPage.png" alt="map_page" height="400"/>
+
 ## 🚀 How to use
 Clone the repo and then cd into the folder. Run the following command. 
 ```sh
