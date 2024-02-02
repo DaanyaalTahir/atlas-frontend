@@ -1,11 +1,11 @@
 import axios from "axios";
 import { View, StyleSheet } from "react-native";
 import React, { useEffect, useRef, useState, useContext } from "react";
-import { useLocalSearchParams, Stack } from "expo-router";
+import { useLocalSearchParams, Stack, router } from "expo-router";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import MapView, { Marker, Callout } from "react-native-maps";
 import { reverseGeocodeAsync } from "expo-location";
-import { Heading, ButtonText } from "@gluestack-ui/themed";
+import { Heading, Image } from "@gluestack-ui/themed";
 import { FlatGrid } from "react-native-super-grid";
 import { Navigation, MapPin, Settings, Volume2 } from "lucide-react-native";
 import ActionCard from "../../../components/ActionCard";
@@ -13,7 +13,7 @@ import { Linking } from "react-native";
 import { SERVER_ENDPOINT } from "../../../globals";
 import RNEventSource from "react-native-event-source";
 import { useSession } from "../../../utils/ctx";
-
+import { getTrackerIcon } from "../../../utils/utilities";
 const Device = () => {
   const local = useLocalSearchParams();
   const deviceId = local.device;
@@ -110,7 +110,7 @@ const Device = () => {
     },
     {
       icon: <MapPin />,
-      onPressEvent: () => console.log("location history pressed"),
+      onPressEvent: () => router.push(`/locationHistory/${deviceId}`),
       name: "Location History",
     },
     {
@@ -120,7 +120,8 @@ const Device = () => {
     },
     {
       icon: <Settings />,
-      onPressEvent: () => console.log("about device pressed"),
+      onPressEvent: () =>
+        router.push(`/settings/${JSON.stringify(deviceInfo)}`),
       name: "Device Settings",
     },
   ];
@@ -140,9 +141,17 @@ const Device = () => {
         <Marker
           key={1}
           coordinate={{ latitude: latitude, longitude: longitude }}
-          title="Cool pin"
-          description="A description"
-        />
+        >
+          <Image
+            source={getTrackerIcon(deviceInfo.itemType)}
+            size="xs"
+            borderWidth="$2"
+            borderRadius="50%"
+            borderColor="$primary400"
+            backgroundColor="$primary50"
+            alt="item_type"
+          />
+        </Marker>
       </MapView>
       <BottomSheet
         snapPoints={snapPoints}
