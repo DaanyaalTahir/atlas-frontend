@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useStorageState } from "./useStorageState";
 import { router } from "expo-router";
 import axios from "axios";
@@ -26,6 +26,10 @@ export function useSession() {
 export function SessionProvider(props) {
   const [[isLoading, session], setSession] = useStorageState("session");
 
+  useEffect(() => {
+    if (session) router.replace("/");
+  }, [session]);
+
   return (
     <AuthContext.Provider
       value={{
@@ -38,7 +42,6 @@ export function SessionProvider(props) {
               data
             );
             const { user } = response.data;
-            router.replace("/");
             setSession(JSON.stringify(user));
           } catch (error) {
             console.error("Login Error:", error);

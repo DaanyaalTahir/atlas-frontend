@@ -12,18 +12,6 @@ export default () => {
           tabBarIcon: ({ color, size }) => (
             <LayoutGrid color={color} size={size} />
           ),
-          headerRight: () => {
-            return (
-              <Button
-                action="secondary"
-                variant="link"
-                style={{ marginRight: 15 }}
-                size="lg"
-              >
-                <ButtonIcon as={PlusCircle} />
-              </Button>
-            );
-          },
         }}
       />
       <Tabs.Screen

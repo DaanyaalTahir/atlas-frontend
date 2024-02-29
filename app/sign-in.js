@@ -9,6 +9,9 @@ import {
   Badge,
   BadgeText,
   HStack,
+  Text,
+  Link,
+  LinkText,
 } from "@gluestack-ui/themed";
 import { LogIn } from "lucide-react-native";
 import { useSession } from "../utils/ctx";
@@ -79,6 +82,12 @@ export default function SignIn() {
         <ButtonText>LogIn </ButtonText>
         <ButtonIcon as={LogIn} />
       </Button>
+      <HStack marginTop={20}>
+        <Text>Don't have an account? </Text>
+        <Link onPress={() => router.push("/register")}>
+          <LinkText>Register</LinkText>
+        </Link>
+      </HStack>
     </Center>
   );
 }

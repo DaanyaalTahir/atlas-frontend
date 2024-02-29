@@ -31,7 +31,6 @@ const LocationHistory = () => {
 
   const onChange = (e, selectedDate) => {
     setDate(selectedDate);
-    console.log(selectedDate);
   };
 
   useEffect(() => {
@@ -53,7 +52,6 @@ const LocationHistory = () => {
         const response = await axios.get(
           `${SERVER_ENDPOINT}/locations/dated-location/${deviceId}/${date.toISOString()}`
         );
-        console.log(response.data);
         setCoordinates(response.data);
       } catch (error) {
         console.log(error);

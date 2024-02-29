@@ -101,7 +101,7 @@ const Device = () => {
   const snapPoints = ["20%", "40%"];
   const actionArray = [
     {
-      icon: <Navigation />,
+      icon: <Navigation color="white" />,
       onPressEvent: () =>
         Linking.openURL(
           `maps://0,0?q=${deviceInfo.name}@${latitude},${longitude}`
@@ -109,17 +109,17 @@ const Device = () => {
       name: "Get Directions",
     },
     {
-      icon: <MapPin />,
+      icon: <MapPin color="white" />,
       onPressEvent: () => router.push(`/locationHistory/${deviceId}`),
       name: "Location History",
     },
     {
-      icon: <Volume2 />,
+      icon: <Volume2 color="white" />,
       onPressEvent: () => console.log("about device pressed"),
       name: "Play Sound",
     },
     {
-      icon: <Settings />,
+      icon: <Settings color="white" />,
       onPressEvent: () =>
         router.push(`/settings/${JSON.stringify(deviceInfo)}`),
       name: "Device Settings",

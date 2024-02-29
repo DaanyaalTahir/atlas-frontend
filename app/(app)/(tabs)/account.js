@@ -1,24 +1,54 @@
-import { View, Text } from "react-native";
 import React from "react";
 import { useSession } from "../../../utils/ctx";
+import {
+  Avatar,
+  AvatarFallbackText,
+  HStack,
+  Heading,
+  View,
+  Text,
+  VStack,
+  Button,
+  ButtonText,
+} from "@gluestack-ui/themed";
 
 const account = () => {
-  const { signOut } = useSession();
-
+  const { session, signOut } = useSession();
+  const { firstName, lastName, userId } = JSON.parse(session);
+  console.log(JSON.parse(session));
   return (
-    <View>
-      <Text>account</Text>
-      <View>
-        <Text
-          onPress={() => {
-            // The `app/(app)/_layout.tsx` will redirect to the sign-in screen.
-            signOut();
-          }}
+    <VStack padding={20}>
+      <HStack alignItems="center">
+        <Avatar
+          bgColor="$secondary500"
+          size="xl"
+          borderRadius="$full"
+          marginRight={10}
         >
-          Sign Out
-        </Text>
-      </View>
-    </View>
+          <AvatarFallbackText>{firstName + " " + lastName}</AvatarFallbackText>
+        </Avatar>
+        <VStack>
+          <Heading>
+            {firstName} {lastName}
+          </Heading>
+          <Text>ID: {userId}</Text>
+        </VStack>
+      </HStack>
+
+      <Button
+        size="md"
+        variant="outline"
+        action="negative"
+        isDisabled={false}
+        isFocusVisible={false}
+        onPress={() => {
+          signOut();
+        }}
+        marginTop={20}
+      >
+        <ButtonText>Sign Out</ButtonText>
+      </Button>
+    </VStack>
   );
 };
 

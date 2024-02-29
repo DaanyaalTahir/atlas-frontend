@@ -16,12 +16,14 @@ const ActionCard = ({ icon, onPressEvent, name }) => {
         width="100%"
         height="100%"
         padding={10}
-        backgroundColor="$secondary200"
+        backgroundColor="$primary500"
       >
         <VStack space="md" reversed={false}>
           {icon}
 
-          <Heading size="md">{name}</Heading>
+          <Heading size="md" color="white">
+            {name}
+          </Heading>
         </VStack>
       </Box>
     </Pressable>
