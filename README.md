@@ -1,7 +1,7 @@
 # Atlas Frontend
 
 Atlas is a device (created using arduino) that allows users to track any of their belongings. They can view the location of their tracked items and interact with them within the Atlas mobile app which was created using react-native. 
-
+<br><br> The backend code can be found here: https://github.com/DaanyaalTahir/atlas-backend
 ## 💻 Technologies
 Below are the technologies that the full-stack app is using (this repo has only the frontend): 
 - react-native
