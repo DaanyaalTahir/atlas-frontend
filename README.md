@@ -30,6 +30,11 @@ The map page allows users to view all their tracked items at once. When the item
 
 <img src="https://github.com/DaanyaalTahir/atlas-frontend/blob/main/sample_images/mapPage.png" alt="map_page" height="400"/>
 
+### Location History
+View the path that an item took on the map. Each node can be clicked to view the time that location was captured. 
+
+<img src="https://github.com/DaanyaalTahir/atlas-frontend/blob/main/sample_images/location_history.png" alt="location_history_page" height="400"/>
+
 ## 🚀 How to use
 Clone the repo and then cd into the folder. Run the following command. 
 ```sh
